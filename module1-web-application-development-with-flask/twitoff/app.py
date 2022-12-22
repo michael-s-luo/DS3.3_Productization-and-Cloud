@@ -47,9 +47,18 @@ def create_app():
 
         # Create two tweets users in the DB
         tweet1 = Tweet(id=1, text="michael's tweet text", user=michael)
-        DB.session.add(tweet1)
         tweet2 = Tweet(id=2, text="julian's tweet text", user=julian)
+        tweet3 = Tweet(id=3, text="hello world", user=michael)
+        tweet4 = Tweet(id=4, text="michael's third tweet", user=michael)
+        tweet5 = Tweet(id=5, text="hello world", user=julian)
+        tweet6 = Tweet(id=6, text="julian's second tweet", user=julian)
+
+        DB.session.add(tweet1)
         DB.session.add(tweet2)
+        DB.session.add(tweet3)
+        DB.session.add(tweet4)
+        DB.session.add(tweet5)
+        DB.session.add(tweet6)
 
         # Save changes and commit
         DB.session.commit()
