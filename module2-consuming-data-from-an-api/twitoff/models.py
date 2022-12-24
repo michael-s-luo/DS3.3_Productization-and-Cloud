@@ -14,9 +14,10 @@ DB = SQLAlchemy()
 
 class User(DB.Model):
     # id column
-    id = DB.Column(DB.BigInteger, primary_key=True)
+    id = DB.Column(DB.BigInteger, primary_key=True, nullable=False)
     # username column
     username = DB.Column(DB.String, nullable=False)
+    newest_tweet_id = DB.Column(DB.BigInteger)
     # tweets = [], defined by backref in Tweet
 
     def __repr__(self) -> str:
@@ -25,9 +26,11 @@ class User(DB.Model):
 
 class Tweet(DB.Model):
     # id column
-    id = DB.Column(DB.BigInteger, primary_key=True)
+    id = DB.Column(DB.BigInteger, primary_key=True, nullable=False)
     # text column: unicode for emojis & special chars
     text = DB.Column(DB.Unicode(300))
+    # word embeddings / vectorization
+    vect = DB.Column(DB.PickleType, nullable=False)
     # user_id foreign key column
     user_id = DB.Column(
         DB.BigInteger, DB.ForeignKey("user.id"), nullable=False

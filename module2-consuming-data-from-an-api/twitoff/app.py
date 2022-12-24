@@ -7,6 +7,7 @@ App 'factory' for a flask instance
 
 from flask import Flask, render_template
 from .models import DB, User, Tweet
+from .twitter import add_or_update_user
 
 # factory
 def create_app():
@@ -35,33 +36,25 @@ def create_app():
 
         # Recreate all database tables according to schema in models.py
         DB.create_all()
-        return "Database has been reset"
+        return render_template("base.html", title="Reset Database")
 
     @app.route("/populate")
     def populate():
-        # Create two dummy users in the DB
-        michael = User(id=1, username="Michael")
-        DB.session.add(michael)
-        julian = User(id=2, username="Julian")
-        DB.session.add(julian)
+        # Create two default users in the DB
+        add_or_update_user("austen")
+        add_or_update_user("nasa")
 
-        # Create two tweets users in the DB
-        tweet1 = Tweet(id=1, text="michael's tweet text", user=michael)
-        tweet2 = Tweet(id=2, text="julian's tweet text", user=julian)
-        tweet3 = Tweet(id=3, text="hello world", user=michael)
-        tweet4 = Tweet(id=4, text="michael's third tweet", user=michael)
-        tweet5 = Tweet(id=5, text="hello world", user=julian)
-        tweet6 = Tweet(id=6, text="julian's second tweet", user=julian)
+        users = User.query.all()
+        return render_template(
+            "base.html", title="Populate Database", users=users
+        )
 
-        DB.session.add(tweet1)
-        DB.session.add(tweet2)
-        DB.session.add(tweet3)
-        DB.session.add(tweet4)
-        DB.session.add(tweet5)
-        DB.session.add(tweet6)
+    @app.route("/update")
+    def update():
+        for user in User.query.all():
+            add_or_update_user(user.username)
 
-        # Save changes and commit
-        DB.session.commit()
-        return "Database populated"
+        users = User.query.all()
+        return render_template("base.html", title="Users Updated", users=users)
 
     return app
