@@ -2,7 +2,9 @@
 Unit 3.3.1
 Date: 2022/12/20
 
-App 'factory' for a flask instance
+App 'factory' for a flask instance.
+Handles all the routing and browser requests for the Twitoff app using
+flask.
 """
 
 from flask import Flask, render_template
@@ -38,17 +40,6 @@ def create_app():
         DB.create_all()
         return render_template("base.html", title="Reset Database")
 
-    @app.route("/populate")
-    def populate():
-        # Create two default users in the DB
-        add_or_update_user("austen")
-        add_or_update_user("nasa")
-
-        users = User.query.all()
-        return render_template(
-            "base.html", title="Populate Database", users=users
-        )
-
     @app.route("/update")
     def update():
         for user in User.query.all():
@@ -56,5 +47,10 @@ def create_app():
 
         users = User.query.all()
         return render_template("base.html", title="Users Updated", users=users)
+
+    @app.route("/user", methods=["POST"])
+    @app.route("/user/<username>", methods=["GET"])
+    def user(username=None, message=""):
+        pass
 
     return app

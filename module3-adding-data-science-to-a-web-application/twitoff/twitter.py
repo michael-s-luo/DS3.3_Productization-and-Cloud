@@ -1,6 +1,9 @@
 """ 
 Unit 3.3.2
-Date: 2022/12/13
+Date: 2022/12/23
+
+Functions to query Twitter API, vectorize tweets, and sync them to 
+local database instance.
 """
 
 from os import getenv
