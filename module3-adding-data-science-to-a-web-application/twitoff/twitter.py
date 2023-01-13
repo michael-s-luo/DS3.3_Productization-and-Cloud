@@ -1,6 +1,6 @@
 """ 
-Unit 3.3.2
-Date: 2022/12/23
+Unit 3.3.3
+Date: 2022/01/12
 
 Functions to query Twitter API, vectorize tweets, and sync them to 
 local database instance.

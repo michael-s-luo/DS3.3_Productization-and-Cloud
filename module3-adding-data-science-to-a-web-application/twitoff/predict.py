@@ -1,6 +1,6 @@
 """ 
-Unit 3.3.2
-Date: 2022/12/23
+Unit 3.3.3
+Date: 2022/01/12
 
 Handles training of logistic regression model to predict
 user of a given tweet. 
@@ -12,10 +12,11 @@ from .models import User
 from .twitter import vectorize_tweet
 
 
-def predict_user(username_0, username_1, tweet_text):
-    """Given two twitter users, predicts the user more likely to tweet a given
-    hypothetical tweet using a logistic regression model. Input tweets are
-    vectorized using SpaCy. Data is obtained from local database instance.
+def predict_user(user0_username, user1_username, tweet_text):
+    """Given two twitter users, predicts user more likely to tweet a given
+    hypothetical string of text using a logistic regression model. Input tweets are
+    vectorized using SpaCy. Data is obtained from Users & Tweets table from
+    local database.
 
     Parameters
     ----------
@@ -27,26 +28,30 @@ def predict_user(username_0, username_1, tweet_text):
         Hypothetical tweet text
     """
 
-    # Get user data from db
-    user_0 = User.query.filter(User.username == username_0).one()
-    user_1 = User.query.filter(User.username == username_1).one()
+    # Get user info from database
+    user0 = User.query.filter(User.username == user0_username).one()
+    user1 = User.query.filter(User.username == user1_username).one()
 
-    # Get tweet word embeddings from each user
-    user_0_vects = np.array([tweet.vect for tweet in user_0.tweets])
-    user_1_vects = np.array([tweet.vect for tweet in user_1.tweets])
+    # Get word embeddings for each user
+    user0_vects = np.array([tweet.vect for tweet in user0.tweets])
+    user1_vects = np.array([tweet.vect for tweet in user1.tweets])
 
-    # Create training data from both users
-    X_train = np.vstack([user_0_vects, user_1_vects])
+    # Create X_train matrix
+    X_train = np.vstack([user0_vects, user1_vects])
 
-    # Create training labels
-    zeros = np.zeros(user_0_vects.shape[0])
-    ones = np.ones(user_1_vects.shape[0])
-    y_train = np.concatenate([zeros, ones])
+    # Create y_target (0 for user0, 1 for user1)
+    zeros = np.zeros(user0_vects.shape[0])
+    ones = np.ones(user1_vects.shape[0])
+    y_target = np.concatenate([zeros, ones])
 
-    # Instantiate and fit log reg model
-    model_lr = LogisticRegression().fit(X_train, y_train)
+    # Instantiate, fit logistic regression
+    model_lr = LogisticRegression().fit(X_train, y_target)
 
-    # Vectorize hypothetical tweet text
-    tweet_text_vect = [vectorize_tweet(tweet_text)]
+    # Make & return prediction for hypothetical tweet text
+    # return model_lr.predict([vectorize_tweet(tweet_text)])[0]
 
-    return model_lr.predict(tweet_text_vect)[0]
+    return (
+        user0_username
+        if model_lr.predict([vectorize_tweet(tweet_text)])[0] == 0
+        else user1_username
+    )

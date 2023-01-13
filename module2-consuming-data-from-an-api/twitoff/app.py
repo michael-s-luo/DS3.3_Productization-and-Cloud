@@ -57,4 +57,17 @@ def create_app():
         users = User.query.all()
         return render_template("base.html", title="Users Updated", users=users)
 
+    # FOR WARM-UP EXERCISE:
+    @app.route("/iris")
+    def iris():
+        from sklearn.datasets import load_iris
+        from sklearn.linear_model import LogisticRegression
+
+        X, y = load_iris(return_X_y=True)
+        clf = LogisticRegression(
+            random_state=0, solver="lbfgs", multi_class="multinomial"
+        ).fit(X, y)
+
+        return str(clf.predict(X[:2, :]))
+
     return app
