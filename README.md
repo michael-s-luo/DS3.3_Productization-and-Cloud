@@ -1,5 +1,5 @@
-#Bloomtech Data Science - Unit 3
-##3.3: Productization and Cloud
+# Bloomtech Data Science - Unit 3
+## 3.3: Productization and Cloud
 
 This repository serves to store and archive my completed projects, assignments, and learning materials from the Bloomtech data science curriculum.
 
